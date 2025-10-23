@@ -7,8 +7,8 @@ from keyboards.users import (
     get_main_menu,
     get_services_menu,
     get_protocol_menu,
-    get_referral_menu,
     get_instructions_menu,
+    get_back_instructions,
     get_back_button
 )
 
@@ -39,7 +39,7 @@ async def services_handler(callback: types.CallbackQuery):
     await callback.answer()
 
 
-# Промежуточное меню протоколов (ЗАМЕНИЛ старые хендлеры)
+# Промежуточное меню протоколов
 @router.callback_query(lambda c: c.data.startswith("connect_"))
 async def protocol_menu_handler(callback: types.CallbackQuery):
     protocol = callback.data.replace("connect_", "")
@@ -116,19 +116,23 @@ async def get_qr_handler(callback: types.CallbackQuery):
             return
 
         connection_string = result["connection_string"]
-
-        # Отправляем QR-код
         qr_code = await create_qr_code(connection_string)
-        await callback.message.answer_photo(
-            qr_code,
-            caption=(
-                f"📱 **QR-код {protocol.upper()}**\n\n"
-                f"**Действует:** {result['expiry_time']} дней\n\n"
+
+        # ✅ РЕДАКТИРУЕМ текущее сообщение, а не создаем новое
+        await callback.message.edit_media(
+            media=types.InputMediaPhoto(
+                media=qr_code,
+                caption=(
+                    f"📱 **QR-код {protocol.upper()}**\n\n"
+                    f"**Действует:** {result['expiry_time']} дней\n\n"
+                    f"⚠️ *Отсканируйте QR-код для быстрого подключения*"
+                ),
+                parse_mode="Markdown"
             ),
-            parse_mode="Markdown"
+            reply_markup=get_qr_menu(protocol)
         )
 
-        await callback.answer("✅ QR-код отправлен")
+        await callback.answer("✅ QR-код сгенерирован")
 
     except Exception as e:
         await callback.answer("❌ Ошибка при создании QR-кода", show_alert=True)
@@ -152,7 +156,7 @@ async def referral_handler(callback: types.CallbackQuery):
         f"*Поделитесь с друзьями для получения бонусов*"
     )
 
-    keyboard = get_referral_menu()
+    keyboard = get_back_button()
     await callback.message.edit_text(text, reply_markup=keyboard, parse_mode="Markdown")
     await callback.answer()
 
@@ -175,7 +179,7 @@ async def instruction_vless_handler(callback: types.CallbackQuery):
         "iOS: Скачайте Shadowrocket\n"
         "macOS: Скачайте V2RayX"
     )
-    await callback.message.edit_text(text, reply_markup=get_back_button())
+    await callback.message.edit_text(text, reply_markup=get_back_instructions())
     await callback.answer()
 
 
@@ -188,7 +192,7 @@ async def instruction_vmess_handler(callback: types.CallbackQuery):
         "iOS: Скачайте Shadowrocket\n"
         "macOS: Скачайте V2RayX"
     )
-    await callback.message.edit_text(text, reply_markup=get_back_button())
+    await callback.message.edit_text(text, reply_markup=get_back_instructions())
     await callback.answer()
 
 
@@ -201,7 +205,7 @@ async def instruction_shadowsocks_handler(callback: types.CallbackQuery):
         "iOS: Скачайте Shadowrocket\n"
         "macOS: Скачайте ShadowsocksX"
     )
-    await callback.message.edit_text(text, reply_markup=get_back_button())
+    await callback.message.edit_text(text, reply_markup=get_back_instructions())
     await callback.answer()
 
 
@@ -214,7 +218,7 @@ async def instruction_trojan_handler(callback: types.CallbackQuery):
         "iOS: Скачайте Shadowrocket\n"
         "macOS: Скачайте TrojanX"
     )
-    await callback.message.edit_text(text, reply_markup=get_back_button())
+    await callback.message.edit_text(text, reply_markup=get_back_instructions())
     await callback.answer()
 
 

@@ -16,7 +16,7 @@ def get_services_menu():
         [InlineKeyboardButton(text="🔐 Подключить VMess", callback_data="connect_vmess")],
         [InlineKeyboardButton(text="🔐 Подключить Shadowsocks", callback_data="connect_shadowsocks")],
         [InlineKeyboardButton(text="🔐 Подключить Trojan", callback_data="connect_trojan")],
-        [InlineKeyboardButton(text="🔙 Назад", callback_data="main_menu")]
+        [InlineKeyboardButton(text="🔙 В главное меню", callback_data="main_menu")]
     ])
 
 # Меню протокола (промежуточное)
@@ -28,10 +28,17 @@ def get_protocol_menu(protocol_name: str):
         [InlineKeyboardButton(text="🔙 В главное меню", callback_data="main_menu")]
     ])
 
-# Меню рефералов
-def get_referral_menu():
+# Меню для QR-кода
+def get_qr_menu(protocol_name: str):
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🔙 Назад", callback_data="main_menu")]
+        [InlineKeyboardButton(text="🔙 Назад к протоколу", callback_data=f"connect_{protocol_name}")],
+        [InlineKeyboardButton(text="🔙 В главное меню", callback_data="main_menu")]
+    ])
+
+# Простая кнопка назад
+def get_back_button():
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="🔙 В главное меню", callback_data="main_menu")]
     ])
 
 # Меню инструкций
@@ -41,17 +48,12 @@ def get_instructions_menu():
         [InlineKeyboardButton(text="VMess", callback_data="instruction_vmess")],
         [InlineKeyboardButton(text="Shadowsocks", callback_data="instruction_shadowsocks")],
         [InlineKeyboardButton(text="Trojan", callback_data="instruction_trojan")],
-        [InlineKeyboardButton(text="🔙 Назад", callback_data="main_menu")]
+        [InlineKeyboardButton(text="🔙 В главное меню", callback_data="main_menu")]
     ])
 
-# Простая кнопка назад
-def get_back_button():
+# Кнопка назад к инструкциям
+def get_back_instructions():
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🔙 Назад", callback_data="main_menu")]
-    ])
-
-# Кнопка назад к услугам
-def get_back_to_services():
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🔙 Назад к услугам", callback_data="services")]
+        [InlineKeyboardButton(text="🔙 Назад к инструкциям", callback_data="instructions")],
+        [InlineKeyboardButton(text="🔙 В главное меню", callback_data="main_menu")]
     ])
