@@ -1,7 +1,6 @@
 from aiogram import Router, types
 from aiogram.filters import Command
 from proxy_clients import vless, vmess, shadowsocks, trojan
-from utils.users import get_user_info
 from utils.qr_code import create_qr_code
 from keyboards.users import (
     get_main_menu,
