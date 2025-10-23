@@ -53,21 +53,13 @@ async def protocol_menu_handler(callback: types.CallbackQuery):
 
     keyboard = get_protocol_menu(protocol)
 
-    # Проверяем тип сообщения и используем правильный метод
-    if callback.message.photo:
-        # Если сообщение содержит фото - редактируем медиа
-        await callback.message.edit_caption(
-            caption=text,
-            reply_markup=keyboard,
-            parse_mode="Markdown"
-        )
-    else:
-        # Если сообщение текстовое - редактируем текст
-        await callback.message.edit_text(
-            text,
-            reply_markup=keyboard,
-            parse_mode="Markdown"
-        )
+    # ✅ УДАЛЯЕМ старое сообщение и СОЗДАЕМ новое текстовое
+    await callback.message.delete()
+    await callback.message.answer(
+        text,
+        reply_markup=keyboard,
+        parse_mode="Markdown"
+    )
 
     await callback.answer()
 
@@ -134,7 +126,8 @@ async def get_qr_handler(callback: types.CallbackQuery):
         connection_string = result["connection_string"]
         qr_code = await create_qr_code(connection_string)
 
-        # ✅ Отправляем новое сообщение с QR-кодом
+        # ✅ УДАЛЯЕМ старое сообщение и СОЗДАЕМ новое с QR-кодом
+        await callback.message.delete()
         await callback.message.answer_photo(
             qr_code,
             caption=(
