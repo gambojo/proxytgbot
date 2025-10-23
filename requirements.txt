@@ -1,0 +1,7 @@
+aiogram==3.17
+python-dotenv==1.0.0
+py3xui==0.5.2
+asyncio==4.0.0
+qrcode[pil]==8.2
+asyncpg==0.30.0
+logger==1.4
