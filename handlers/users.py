@@ -52,7 +52,23 @@ async def protocol_menu_handler(callback: types.CallbackQuery):
     )
 
     keyboard = get_protocol_menu(protocol)
-    await callback.message.edit_text(text, reply_markup=keyboard, parse_mode="Markdown")
+
+    # Проверяем тип сообщения и используем правильный метод
+    if callback.message.photo:
+        # Если сообщение содержит фото - редактируем медиа
+        await callback.message.edit_caption(
+            caption=text,
+            reply_markup=keyboard,
+            parse_mode="Markdown"
+        )
+    else:
+        # Если сообщение текстовое - редактируем текст
+        await callback.message.edit_text(
+            text,
+            reply_markup=keyboard,
+            parse_mode="Markdown"
+        )
+
     await callback.answer()
 
 
@@ -118,18 +134,16 @@ async def get_qr_handler(callback: types.CallbackQuery):
         connection_string = result["connection_string"]
         qr_code = await create_qr_code(connection_string)
 
-        # ✅ РЕДАКТИРУЕМ текущее сообщение, а не создаем новое
-        await callback.message.edit_media(
-            media=types.InputMediaPhoto(
-                media=qr_code,
-                caption=(
-                    f"📱 **QR-код {protocol.upper()}**\n\n"
-                    f"**Действует:** {result['expiry_time']} дней\n\n"
-                    f"⚠️ *Отсканируйте QR-код для быстрого подключения*"
-                ),
-                parse_mode="Markdown"
+        # ✅ Отправляем новое сообщение с QR-кодом
+        await callback.message.answer_photo(
+            qr_code,
+            caption=(
+                f"📱 **QR-код {protocol.upper()}**\n\n"
+                f"**Действует:** {result['expiry_time']} дней\n\n"
+                f"⚠️ *Отсканируйте QR-код для быстрого подключения*"
             ),
-            reply_markup=get_qr_menu(protocol)
+            reply_markup=get_qr_menu(protocol),
+            parse_mode="Markdown"
         )
 
         await callback.answer("✅ QR-код сгенерирован")
