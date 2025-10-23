@@ -27,7 +27,18 @@ async def start_handler(message: types.Message):
 @router.callback_query(lambda c: c.data == "main_menu")
 async def back_to_main(callback: types.CallbackQuery):
     keyboard = get_main_menu()
-    await callback.message.edit_text("👋 Главное меню:", reply_markup=keyboard)
+    try:
+        # ✅ Пытаемся отредактировать, если это текстовое сообщение
+        await callback.message.edit_text("👋 Главное меню:", reply_markup=keyboard)
+    except Exception:
+        try:
+            await callback.message.delete()
+            await callback.message.answer("👋 Главное меню:", reply_markup=keyboard)
+            # Если не получилось, пытаемся отредактировать фото
+        except Exception:
+            # Если всё не получилось, удаляем и создаем новое
+            await callback.message.edit_caption(caption="👋 Главное меню:", reply_markup=keyboard)
+
     await callback.answer()
 
 
