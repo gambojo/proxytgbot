@@ -1,4 +1,4 @@
-from database.postgres import db
+from databases.postgres import db
 from proxy_clients import vless, vmess, shadowsocks, trojan
 from config import VLESS_INBOUND_ID, VMESS_INBOUND_ID, SHADOWSOCKS_INBOUND_ID, TROJAN_INBOUND_ID
 

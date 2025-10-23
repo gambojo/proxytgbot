@@ -1,4 +1,4 @@
-from database.postgres import db
+from databases.postgres import db
 
 
 class AdminUsersService:
