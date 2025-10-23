@@ -7,6 +7,7 @@ from keyboards.users import (
     get_main_menu,
     get_services_menu,
     get_protocol_menu,
+    get_qr_menu,
     get_instructions_menu,
     get_back_instructions,
     get_back_button
