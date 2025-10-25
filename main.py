@@ -6,9 +6,6 @@ from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from alembic.config import Config
-from alembic import command
-
 # Плагины
 from plugins.vpn.handlers import router as vpn_router
 
@@ -17,6 +14,7 @@ from core.config import settings
 from core.handlers import errors as error_handlers, callbacks as callback_router, start as start_handler
 from core.middlewares import user_init_middleware
 from databases.init_db import init
+
 
 async def main():
     logging.basicConfig(
@@ -29,12 +27,10 @@ async def main():
         default=DefaultBotProperties(parse_mode=ParseMode.HTML)
     )
 
-    if settings.db_is_sqlite:
-        print("⚠️ SQLite detected — skipping migrations")
-    elif settings.db_is_postgres:
-        await run_postgres_migrations()
-
+    # Инициализация БД
     await init()
+
+    # Диспетчер
     dp = Dispatcher(storage=MemoryStorage())
 
     # Middleware
