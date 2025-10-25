@@ -1,22 +1,4 @@
 services:
-  postgres:
-    image: postgres:15
-    container_name: proxy_bot_postgres
-    env_file:
-      - .env
-    ports:
-      - "45432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./init/postgres-init.sql:/docker-entrypoint-initdb.d/01-init.sql
-    networks:
-      - proxy_bot_network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d proxy_bot_db -U proxy_bot_user"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   bot:
     build: .
     container_name: proxy_bot
@@ -28,6 +10,24 @@ services:
     restart: unless-stopped
     networks:
       - proxy_bot_network
+
+  postgres:
+    image: postgres:15
+    container_name: proxy_bot_postgres
+    env_file:
+      - .env
+    ports:
+      - "45432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./databases/init/postgres-init.sql:/docker-entrypoint-initdb.d/01-init.sql
+    networks:
+      - proxy_bot_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d proxy_bot_db -U proxy_bot_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   adminer:
     image: adminer
